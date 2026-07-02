@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AutoRutas — Panel de administrador</title>
+<link rel="stylesheet" href="/shared.css" />
+<link rel="stylesheet" href="/admin/style.css" />
+</head>
+<body>
+
+<!-- ================= PANTALLA DE ACCESO (login / primer arranque) ================= -->
+<div id="authScreen" class="auth-screen" style="display:none">
+  <div class="auth-card card">
+    <div class="auth-logo">🚚</div>
+    <h1 id="authTitle">Iniciar sesión</h1>
+    <p id="authSubtitle" class="muted">Entra con la contraseña de administrador.</p>
+    <div class="field">
+      <label>Contraseña</label>
+      <input type="password" id="authPassword" placeholder="••••••••" />
+    </div>
+    <button class="btn-primary" id="authSubmit" style="width:100%">Entrar</button>
+    <p id="authError" class="error-text"></p>
+  </div>
+</div>
+
+<!-- ================= APP PRINCIPAL ================= -->
+<div id="app" class="app" style="display:none">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">🚚</div>
+      <div>
+        <div class="brand-name" id="sidebarBusinessName">AutoRutas</div>
+        <div class="brand-sub">Panel de administrador</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <button class="nav-item active" data-tab="resumen">📍 Resumen y mapa en vivo</button>
+      <button class="nav-item" data-tab="rutas">🗺️ Rutas de hoy</button>
+      <button class="nav-item" data-tab="choferes">🧑‍✈️ Choferes</button>
+      <button class="nav-item" data-tab="historial">🧾 Historial de facturas</button>
+      <button class="nav-item" data-tab="ajustes">⚙️ Ajustes</button>
+    </nav>
+    <div class="sidebar-footer">
+      <span id="demoBadge" class="pill pill-warn" style="display:none">Modo demo</span>
+      <button class="btn-secondary" id="logoutBtn">Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- ---------- RESUMEN ---------- -->
+    <section id="tab-resumen" class="tab active">
+      <div class="tab-header">
+        <h2>Resumen de hoy</h2>
+        <button class="btn-primary" id="runNowBtn">▶ Ejecutar importación ahora</button>
+      </div>
+      <div class="grid-summary">
+        <div class="card stat-card">
+          <div class="stat-label">Facturas importadas hoy</div>
+          <div class="stat-value" id="statTotal">–</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label pill-norte-text">Paradas Norte</div>
+          <div class="stat-value" id="statNorte">–</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label pill-sur-text">Paradas Sur</div>
+          <div class="stat-value" id="statSur">–</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-label">Sin zona asignada</div>
+          <div class="stat-value" id="statSinZona">–</div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:18px; padding:0; overflow:hidden;">
+        <div id="map" class="map"></div>
+      </div>
+    </section>
+
+    <!-- ---------- RUTAS ---------- -->
+    <section id="tab-rutas" class="tab">
+      <div class="tab-header">
+        <h2>Rutas de hoy</h2>
+      </div>
+      <div class="grid-2">
+        <div class="card route-card">
+          <div class="route-title"><span class="pill pill-norte">NORTE</span> <span id="routeNorteMeta" class="muted"></span></div>
+          <div class="field">
+            <label>Chofer asignado</label>
+            <select id="assignNorte"></select>
+          </div>
+          <ol id="stopsNorte" class="stops-list"></ol>
+          <a id="mapsLinkNorte" href="#" target="_blank" class="btn-north maps-link" style="display:none">Abrir ruta en Google Maps →</a>
+        </div>
+        <div class="card route-card">
+          <div class="route-title"><span class="pill pill-sur">SUR</span> <span id="routeSurMeta" class="muted"></span></div>
+          <div class="field">
+            <label>Chofer asignado</label>
+            <select id="assignSur"></select>
+          </div>
+          <ol id="stopsSur" class="stops-list"></ol>
+          <a id="mapsLinkSur" href="#" target="_blank" class="btn-south maps-link" style="display:none">Abrir ruta en Google Maps →</a>
+        </div>
+      </div>
+      <div class="card" id="sinZonaCard" style="margin-top:18px; display:none">
+        <h3>⚠️ Facturas sin zona asignada</h3>
+        <p class="muted">No se pudo clasificar automáticamente. Ajusta la dirección o agrega el código postal en Ajustes.</p>
+        <ol id="stopsSinZona" class="stops-list"></ol>
+      </div>
+    </section>
+
+    <!-- ---------- CHOFERES ---------- -->
+    <section id="tab-choferes" class="tab">
+      <div class="tab-header">
+        <h2>Choferes</h2>
+        <button class="btn-primary" id="addDriverBtn">+ Agregar chofer</button>
+      </div>
+      <div class="card">
+        <table class="table" id="driversTable">
+          <thead><tr><th>Nombre</th><th>Teléfono</th><th>Zona predeterminada</th><th>Ubicación</th><th>Link del chofer</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ---------- HISTORIAL ---------- -->
+    <section id="tab-historial" class="tab">
+      <div class="tab-header"><h2>Historial de importaciones</h2></div>
+      <div class="card">
+        <table class="table" id="historyTable">
+          <thead><tr><th>Fecha</th><th>Facturas importadas</th><th>Hora</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ---------- AJUSTES ---------- -->
+    <section id="tab-ajustes" class="tab">
+      <div class="tab-header"><h2>Ajustes</h2></div>
+
+      <div class="card" style="margin-bottom:18px">
+        <h3>Negocio</h3>
+        <div class="grid-2">
+          <div class="field"><label>Nombre del negocio</label><input id="cfgBusinessName" /></div>
+          <div class="field"><label>Hora de ejecución automática diaria</label><input id="cfgRunTime" type="time" /></div>
+        </div>
+        <div class="field"><label>Dirección de origen (almacén / negocio, punto de partida de las rutas)</label><input id="cfgOrigin" placeholder="Ej: 100 NW 1st Ave, Miami, FL 33128" /></div>
+        <button class="btn-primary" id="saveBusinessBtn">Guardar</button>
+      </div>
+
+      <div class="card" style="margin-bottom:18px">
+        <h3>Google Maps</h3>
+        <p class="muted">Se usa para geocodificar direcciones y optimizar el orden de las paradas. Consigue tu API key en Google Cloud Console (activa las APIs "Geocoding API", "Directions API" y "Maps JavaScript API").</p>
+        <div class="field"><label>API key de Google Maps</label><input id="cfgMapsKey" placeholder="AIza..." /></div>
+        <button class="btn-primary" id="saveMapsBtn">Guardar</button>
+      </div>
+
+      <div class="card" style="margin-bottom:18px">
+        <h3>Conexión con QuickBooks Online</h3>
+        <p class="muted">Adaptable a cualquier compañía de entregas: solo necesitas los datos de tu app de <a href="https://developer.intuit.com/app/developer/dashboard" target="_blank">Intuit Developer</a>. Llena el formulario y presiona "Conectar" — no hace falta tocar archivos de configuración.</p>
+        <div id="qboStatus" class="qbo-status"></div>
+        <div class="grid-2">
+          <div class="field"><label>Client ID</label><input id="cfgQboClientId" /></div>
+          <div class="field"><label>Client Secret</label><input id="cfgQboClientSecret" type="password" placeholder="(no se muestra el actual)" /></div>
+        </div>
+        <div class="field">
+          <label>Entorno</label>
+          <select id="cfgQboEnv">
+            <option value="sandbox">Sandbox (pruebas)</option>
+            <option value="production">Producción (datos reales)</option>
+          </select>
+        </div>
+        <div class="btn-row">
+          <button class="btn-primary" id="saveQboBtn">Guardar datos</button>
+          <button class="btn-secondary" id="connectQboBtn">🔗 Conectar con QuickBooks</button>
+          <button class="btn-danger" id="disconnectQboBtn">Desconectar</button>
+        </div>
+        <div class="field" style="margin-top:14px">
+          <label><input type="checkbox" id="cfgDemoMode" style="width:auto; display:inline-block; margin-right:8px" /> Usar datos de ejemplo (modo demo) en vez de QuickBooks</label>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Reglas de zona Norte / Sur</h3>
+        <p class="muted">Esta app es genérica para cualquier ciudad: define la calle o dirección que separa el Norte del Sur en tu zona de reparto. Si las direcciones ya incluyen el cuadrante (NW/NE/SW/SE, típico de Miami), se detecta automáticamente sin necesidad de geocodificar.</p>
+        <div class="field"><label>Calle/dirección divisoria (respaldo por geocodificación)</label><input id="cfgDivider" placeholder="Ej: Flagler St, Miami, FL" /></div>
+        <div class="field"><label><input type="checkbox" id="cfgQuadrant" style="width:auto; display:inline-block; margin-right:8px" /> Detectar automáticamente NW/NE/SW/SE en la dirección</label></div>
+        <div class="grid-2">
+          <div class="field"><label>Códigos postales forzados a Norte (separados por coma)</label><input id="cfgZipNorte" placeholder="33125, 33127" /></div>
+          <div class="field"><label>Códigos postales forzados a Sur (separados por coma)</label><input id="cfgZipSur" placeholder="33135, 33155" /></div>
+        </div>
+        <button class="btn-primary" id="saveZoneBtn">Guardar</button>
+      </div>
+
+    </section>
+
+  </main>
+</div>
+
+<!-- modal simple para agregar/editar chofer -->
+<div id="driverModal" class="modal-backdrop" style="display:none">
+  <div class="modal card">
+    <h3 id="driverModalTitle">Agregar chofer</h3>
+    <div class="field"><label>Nombre</label><input id="driverName" /></div>
+    <div class="field"><label>Teléfono</label><input id="driverPhone" /></div>
+    <div class="field">
+      <label>Zona predeterminada</label>
+      <select id="driverZone">
+        <option value="">Sin zona predeterminada</option>
+        <option value="norte">Norte</option>
+        <option value="sur">Sur</option>
+      </select>
+    </div>
+    <div class="btn-row">
+      <button class="btn-secondary" id="driverModalCancel">Cancelar</button>
+      <button class="btn-primary" id="driverModalSave">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="/admin/app.js"></script>
+</body>
+</html>
+
