@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>Mi ruta de hoy — AutoRutas</title>
+<link rel="stylesheet" href="/shared.css" />
+<link rel="stylesheet" href="/driver/style.css" />
+</head>
+<body>
+
+<div id="invalidScreen" class="center-screen" style="display:none">
+  <div class="card" style="text-align:center; max-width:320px">
+    <h2>Link no válido</h2>
+    <p class="muted">Pide a tu administrador que te comparta de nuevo tu link personal.</p>
+  </div>
+</div>
+
+<div id="driverApp" style="display:none">
+  <header class="d-header">
+    <div>
+      <div class="d-hello">Hola, <b id="driverName">—</b></div>
+      <div class="d-zone" id="driverZone"></div>
+    </div>
+    <button id="shareLocBtn" class="btn-primary">📍 Compartir ubicación</button>
+  </header>
+
+  <div id="locStatus" class="loc-status"></div>
+
+  <div id="noRoute" class="card" style="margin:14px; display:none">
+    <p>Todavía no tienes una ruta asignada para hoy. Vuelve a revisar más tarde o contacta a tu administrador.</p>
+  </div>
+
+  <div id="routeSummary" class="route-summary" style="display:none">
+    <span id="stopsCount"></span>
+    <a id="navLink" href="#" target="_blank" class="btn-primary nav-btn">🧭 Navegar ruta completa</a>
+  </div>
+
+  <ol id="stopsList" class="d-stops"></ol>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script src="/driver/app.js"></script>
+</body>
+</html>
+
