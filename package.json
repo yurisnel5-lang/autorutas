@@ -1,0 +1,14 @@
+{
+    "name": "autorutas",
+    "version": "1.0.0",
+    "description": "App que importa automaticamente las facturas diarias de QuickBooks Online, las agrupa en rutas Norte/Sur, las optimiza con Google Maps y asigna choferes con seguimiento en vivo.",
+    "main": "server/server.js",
+    "engines": {
+          "node": ">=18.0.0"
+    },
+    "scripts": {
+          "start": "node server/server.js"
+    },
+    "license": "MIT",
+    "dependencies": {}
+}
