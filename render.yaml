@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: autorutas
+    runtime: node
+    plan: starter
+    region: oregon
+    buildCommand: "echo none"
+    startCommand: "node server/server.js"
+    envVars:
+      - key: DATA_DIR
+        value: /var/data
+      - key: NODE_VERSION
+        value: 20
+    disk:
+      name: autorutas-data
+      mountPath: /var/data
+      sizeGB: 1
