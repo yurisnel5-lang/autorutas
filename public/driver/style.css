@@ -1,0 +1,55 @@
+body { background: var(--surface-alt); }
+
+.center-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+
+.d-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--primary);
+  color: #fff;
+  padding: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.d-hello { font-size: 16px; }
+.d-zone { font-size: 12px; opacity: .85; margin-top: 2px; }
+#shareLocBtn { background: #fff; color: var(--primary); white-space: nowrap; }
+#shareLocBtn.active { background: var(--south); color: #fff; }
+
+.loc-status { text-align: center; font-size: 12px; padding: 6px; color: var(--text-muted); }
+
+.route-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 14px 10px;
+}
+.nav-btn { padding: 10px 16px; border-radius: 10px; }
+
+.d-stops { list-style: none; margin: 0; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.d-stop {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: var(--shadow);
+}
+.d-stop-top { display: flex; align-items: flex-start; gap: 10px; }
+.d-stop-order {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--primary); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; flex-shrink: 0;
+}
+.d-stop-customer { font-weight: 700; font-size: 15px; }
+.d-stop-address { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+.d-stop-amount { font-size: 13px; margin-top: 4px; }
+.d-stop-actions { display: flex; gap: 8px; margin-top: 12px; }
+.d-stop-actions button { flex: 1; font-size: 13px; padding: 10px 8px; }
+.d-stop.delivered { opacity: .6; }
+.d-stop.failed { border-color: var(--danger); }
+
